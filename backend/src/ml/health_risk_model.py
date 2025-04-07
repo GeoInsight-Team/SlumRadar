@@ -1,138 +1,67 @@
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import StandardScaler
+from sklearn.mixture import GaussianMixture
+from sklearn.decomposition import PCA
 
-# Function to load and preprocess the dataset
-def load_and_preprocess_data(file_path):
-    try:
-        # Load user-provided dataset
-        health_data = pd.read_csv(file_path)
-        
-        # Clean column names (remove leading/trailing spaces)
-        health_data.columns = health_data.columns.str.strip()
+# Load the dataset
+df = pd.read_csv("health.csv")
+df.columns = df.columns.str.strip()
+df['Population'] = pd.to_numeric(df['Population'], errors='coerce')
 
-        # Drop completely blank or unnamed columns
-        health_data = health_data.loc[:, ~health_data.columns.str.contains('^Unnamed')]
+# Simulate realistic values based on area category
+def enrich_realistic_values(row):
+    category = row['Category']
+    if category == 'Slum':
+        return {
+            'Disease Outbreak Risk (%)': np.random.normal(80, 10),
+            'Malnutrition Rate (%)': np.random.normal(45, 10),
+            'Sanitation Score (0-10)': np.clip(np.random.normal(2.0, 1.0), 0, 10),
+            'Waterborne Disease Risk (%)': np.random.normal(75, 10)
+        }
+    elif category == 'Semi-Developed':
+        return {
+            'Disease Outbreak Risk (%)': np.random.normal(50, 10),
+            'Malnutrition Rate (%)': np.random.normal(25, 8),
+            'Sanitation Score (0-10)': np.clip(np.random.normal(5.5, 1.5), 0, 10),
+            'Waterborne Disease Risk (%)': np.random.normal(50, 10)
+        }
+    else:
+        return {
+            'Disease Outbreak Risk (%)': np.random.normal(25, 8),
+            'Malnutrition Rate (%)': np.random.normal(10, 5),
+            'Sanitation Score (0-10)': np.clip(np.random.normal(8.5, 1.0), 0, 10),
+            'Waterborne Disease Risk (%)': np.random.normal(20, 8)
+        }
 
-        # Print column names for debugging
-        print("\n📋 Columns in your dataset after removing blank columns:")
-        print(health_data.columns.tolist())
+# Enrich dataset
+simulated = df.apply(enrich_realistic_values, axis=1, result_type='expand')
+for col in simulated.columns:
+    df[col] = np.round(simulated[col], 2)
 
-        # Remove commas and convert numeric columns to float
-        numeric_columns = ['Population', 'Disease Outbreak Risk (%)', 'Malnutrition Rate (%)',
-                           'Sanitation Score (0-10)', 'Waterborne Disease Risk (%)']
-        for col in numeric_columns:
-            health_data[col] = health_data[col].replace(',', '', regex=True).apply(pd.to_numeric, errors='coerce')
+# Feature selection
+features = ['Population', 'Disease Outbreak Risk (%)', 'Malnutrition Rate (%)',
+            'Sanitation Score (0-10)', 'Waterborne Disease Risk (%)']
+X = df[features]
+X_scaled = StandardScaler().fit_transform(X)
 
-        # Handle missing or invalid values (e.g., NaN after conversion)
-        missing_rows = health_data[health_data[numeric_columns].isnull().any(axis=1)]
-        print(f"\n❌ Rows dropped during preprocessing due to missing or invalid values: {len(missing_rows)}")
-        print(missing_rows)
+# Optional: PCA for dimensionality reduction
+pca = PCA(n_components=2)
+X_pca = pca.fit_transform(X_scaled)
+df['PCA1'], df['PCA2'] = X_pca[:, 0], X_pca[:, 1]
 
-        # Drop rows with missing values in numeric columns
-        health_data = health_data.dropna(subset=numeric_columns)
+# Gaussian Mixture Model for clustering
+gmm = GaussianMixture(n_components=3, random_state=42)
+df['GMM_Cluster'] = gmm.fit_predict(X_scaled)
 
-        # Create 'health_risk' label based on rules
-        health_data['health_risk'] = np.where(
-            (health_data['Disease Outbreak Risk (%)'] > 50) |
-            (health_data['Malnutrition Rate (%)'] > 30) |
-            (health_data['Sanitation Score (0-10)'] < 4),
-            'High Risk',
-            np.where(
-                (health_data['Disease Outbreak Risk (%)'] > 20) |
-                (health_data['Malnutrition Rate (%)'] > 10) |
-                (health_data['Sanitation Score (0-10)'] < 7),
-                'Medium Risk',
-                'Low Risk'
-            )
-        )
-        
-        return health_data
+# Map to risk levels based on mean risk of each cluster
+cluster_means = df.groupby('GMM_Cluster')[['Disease Outbreak Risk (%)', 'Malnutrition Rate (%)',
+                                           'Waterborne Disease Risk (%)']].mean().sum(axis=1)
+risk_order = cluster_means.sort_values().index
+risk_mapping = {risk_order[0]: 'Low Risk', risk_order[1]: 'Medium Risk', risk_order[2]: 'High Risk'}
+df['Clustered Risk Level'] = df['GMM_Cluster'].map(risk_mapping)
 
-    except KeyError as e:
-        print(f"❌ Error: Missing column in the dataset - {e}")
-        exit()
-    except Exception as e:
-        print(f"❌ Error while loading or preprocessing data: {e}")
-        exit()
-
-# Function to train the Random Forest model
-def train_model(health_data):
-    try:
-        # Define features (X) and target (y)
-        X = health_data[['Population', 'Disease Outbreak Risk (%)', 'Malnutrition Rate (%)',
-                         'Sanitation Score (0-10)', 'Waterborne Disease Risk (%)']]
-        y = health_data['health_risk']
-
-        # Encode target labels
-        label_encoder = LabelEncoder()
-        y_encoded = label_encoder.fit_transform(y)
-
-        # Train/test split
-        X_train, X_test, y_train, y_test = train_test_split(X, y_encoded, test_size=0.2, random_state=42)
-
-        # Train Random Forest
-        model = RandomForestClassifier(n_estimators=100, random_state=42)
-        model.fit(X_train, y_train)
-
-        # Evaluate
-        y_pred = model.predict(X_test)
-        print("\n✅ Model Evaluation")
-        print("Accuracy:", accuracy_score(y_test, y_pred))
-        print("Classification Report:\n", classification_report(y_test, y_pred))
-        print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred))
-
-        return model, label_encoder
-
-    except Exception as e:
-        print(f"❌ Error while training the model: {e}")
-        exit()
-
-# Function to make predictions and save to CSV without including 'health_risk' column
-def predict_and_save_health_risk(model, label_encoder, input_data, output_file):
-    try:
-        input_data = input_data.copy()
-        
-        # Add predicted health risk column
-        input_data['Predicted Health Risk'] = label_encoder.inverse_transform(
-            model.predict(input_data[['Population', 'Disease Outbreak Risk (%)',
-                                      'Malnutrition Rate (%)', 'Sanitation Score (0-10)',
-                                      'Waterborne Disease Risk (%)']])
-        )
-        
-        # Drop the original 'health_risk' column from the output
-        input_data.drop(columns=['health_risk'], inplace=True)
-        
-        # Save the modified data to a new CSV file
-        input_data.to_csv(output_file, index=False)
-        
-        print(f"📁 Results saved to: {output_file}")
-
-    except Exception as e:
-        print(f"❌ Error while making predictions or saving results: {e}")
-        exit()
-
-# Main execution flow
-if __name__ == "__main__":
-    try:
-        # Ask user for file path
-        input_csv = input("📂 Enter the path to your health dataset CSV file: ").strip()
-
-        # Load and preprocess data
-        data = load_and_preprocess_data(input_csv)
-
-        # Train model
-        model, label_encoder = train_model(data)
-
-        # Predict and save results to new CSV without including 'health_risk'
-        output_csv = "predicted_health_risk_output.csv"
-        
-        predict_and_save_health_risk(model, label_encoder, data, output_csv)
-
-    except FileNotFoundError:
-         print(f"❌ Error: The file '{input_csv}' was not found. Please make sure it exists in the specified path.")
-    except Exception as e:
-         print(f"❌ Unexpected error: {e}")
+# Save result
+output_path = "gmm_clustered_health_risk.csv"
+df.to_csv(output_path, index=False)
+print(f"📁 Clustered health risk data saved to {output_path}")
