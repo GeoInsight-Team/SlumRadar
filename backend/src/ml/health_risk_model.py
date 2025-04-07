@@ -6,88 +6,133 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 from sklearn.preprocessing import LabelEncoder
 
 # Function to load and preprocess the dataset
-def load_and_preprocess_data(dataset_path):
-    # Load the synthetic dataset
-    health_data = pd.read_csv(dataset_path)
+def load_and_preprocess_data(file_path):
+    try:
+        # Load user-provided dataset
+        health_data = pd.read_csv(file_path)
+        
+        # Clean column names (remove leading/trailing spaces)
+        health_data.columns = health_data.columns.str.strip()
 
-    # Define health risk categories based on thresholds
-    health_data['health_risk'] = np.where(
-        (health_data['disease_outbreak_risk (%)'] > 50) | 
-        (health_data['malnutrition_rate (%)'] > 30) | 
-        (health_data['sanitation_score (0-10)'] < 4),
-        'High Risk',
-        np.where(
-            (health_data['disease_outbreak_risk (%)'] > 20) | 
-            (health_data['malnutrition_rate (%)'] > 10) | 
-            (health_data['sanitation_score (0-10)'] < 7),
-            'Medium Risk',
-            'Low Risk'
+        # Drop completely blank or unnamed columns
+        health_data = health_data.loc[:, ~health_data.columns.str.contains('^Unnamed')]
+
+        # Print column names for debugging
+        print("\n📋 Columns in your dataset after removing blank columns:")
+        print(health_data.columns.tolist())
+
+        # Remove commas and convert numeric columns to float
+        numeric_columns = ['Population', 'Disease Outbreak Risk (%)', 'Malnutrition Rate (%)',
+                           'Sanitation Score (0-10)', 'Waterborne Disease Risk (%)']
+        for col in numeric_columns:
+            health_data[col] = health_data[col].replace(',', '', regex=True).apply(pd.to_numeric, errors='coerce')
+
+        # Handle missing or invalid values (e.g., NaN after conversion)
+        missing_rows = health_data[health_data[numeric_columns].isnull().any(axis=1)]
+        print(f"\n❌ Rows dropped during preprocessing due to missing or invalid values: {len(missing_rows)}")
+        print(missing_rows)
+
+        # Drop rows with missing values in numeric columns
+        health_data = health_data.dropna(subset=numeric_columns)
+
+        # Create 'health_risk' label based on rules
+        health_data['health_risk'] = np.where(
+            (health_data['Disease Outbreak Risk (%)'] > 50) |
+            (health_data['Malnutrition Rate (%)'] > 30) |
+            (health_data['Sanitation Score (0-10)'] < 4),
+            'High Risk',
+            np.where(
+                (health_data['Disease Outbreak Risk (%)'] > 20) |
+                (health_data['Malnutrition Rate (%)'] > 10) |
+                (health_data['Sanitation Score (0-10)'] < 7),
+                'Medium Risk',
+                'Low Risk'
+            )
         )
-    )
-    
-    return health_data
+        
+        return health_data
+
+    except KeyError as e:
+        print(f"❌ Error: Missing column in the dataset - {e}")
+        exit()
+    except Exception as e:
+        print(f"❌ Error while loading or preprocessing data: {e}")
+        exit()
 
 # Function to train the Random Forest model
 def train_model(health_data):
-    # Define features (X) and target variable (y)
-    X = health_data[['population', 'disease_outbreak_risk (%)', 'malnutrition_rate (%)', 
-                     'sanitation_score (0-10)', 'waterborne_disease_risk (%)']]
-    y = health_data['health_risk']
+    try:
+        # Define features (X) and target (y)
+        X = health_data[['Population', 'Disease Outbreak Risk (%)', 'Malnutrition Rate (%)',
+                         'Sanitation Score (0-10)', 'Waterborne Disease Risk (%)']]
+        y = health_data['health_risk']
 
-    # Encode categorical variables (e.g., health_risk)
-    label_encoder = LabelEncoder()
-    y_encoded = label_encoder.fit_transform(y)
+        # Encode target labels
+        label_encoder = LabelEncoder()
+        y_encoded = label_encoder.fit_transform(y)
 
-    # Split data into training and testing sets
-    X_train, X_test, y_train, y_test = train_test_split(X, y_encoded, test_size=0.2, random_state=42)
+        # Train/test split
+        X_train, X_test, y_train, y_test = train_test_split(X, y_encoded, test_size=0.2, random_state=42)
 
-    # Train a Random Forest Classifier
-    model = RandomForestClassifier(n_estimators=100, random_state=42)
-    model.fit(X_train, y_train)
+        # Train Random Forest
+        model = RandomForestClassifier(n_estimators=100, random_state=42)
+        model.fit(X_train, y_train)
 
-    # Evaluate the model's performance
-    y_pred = model.predict(X_test)
-    accuracy = accuracy_score(y_test, y_pred)
-    class_report = classification_report(y_test, y_pred)
-    conf_matrix = confusion_matrix(y_test, y_pred)
+        # Evaluate
+        y_pred = model.predict(X_test)
+        print("\n✅ Model Evaluation")
+        print("Accuracy:", accuracy_score(y_test, y_pred))
+        print("Classification Report:\n", classification_report(y_test, y_pred))
+        print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred))
 
-    print("Accuracy:", accuracy)
-    print("Classification Report:")
-    print(class_report)
-    print("Confusion Matrix:")
-    print(conf_matrix)
+        return model, label_encoder
 
-    return model, label_encoder
+    except Exception as e:
+        print(f"❌ Error while training the model: {e}")
+        exit()
 
-# Function to predict health risks for new data
-def predict_health_risk(model, label_encoder, input_data):
-    predictions = model.predict(input_data)
-    predicted_risks = label_encoder.inverse_transform(predictions)
-    
-    return predicted_risks
+# Function to make predictions and save to CSV without including 'health_risk' column
+def predict_and_save_health_risk(model, label_encoder, input_data, output_file):
+    try:
+        input_data = input_data.copy()
+        
+        # Add predicted health risk column
+        input_data['Predicted Health Risk'] = label_encoder.inverse_transform(
+            model.predict(input_data[['Population', 'Disease Outbreak Risk (%)',
+                                      'Malnutrition Rate (%)', 'Sanitation Score (0-10)',
+                                      'Waterborne Disease Risk (%)']])
+        )
+        
+        # Drop the original 'health_risk' column from the output
+        input_data.drop(columns=['health_risk'], inplace=True)
+        
+        # Save the modified data to a new CSV file
+        input_data.to_csv(output_file, index=False)
+        
+        print(f"📁 Results saved to: {output_file}")
 
-# Example usage for testing the module
+    except Exception as e:
+        print(f"❌ Error while making predictions or saving results: {e}")
+        exit()
+
+# Main execution flow
 if __name__ == "__main__":
-    # Path to the dataset
-    dataset_path = 'synthetic_health_data_from_training.csv'
+    try:
+        # Ask user for file path
+        input_csv = input("📂 Enter the path to your health dataset CSV file: ").strip()
 
-    # Load and preprocess data
-    health_data = load_and_preprocess_data(dataset_path)
+        # Load and preprocess data
+        data = load_and_preprocess_data(input_csv)
 
-    # Train the model and get the label encoder
-    model, label_encoder = train_model(health_data)
+        # Train model
+        model, label_encoder = train_model(data)
 
-    # Predict health risks for new data
-    new_data = pd.DataFrame({
-        "population": [15000, 45000, 8000],
-        "disease_outbreak_risk (%)": [15.5, 35.2, 75.1],
-        "malnutrition_rate (%)": [5.2, 20.1, 40.3],
-        "sanitation_score (0-10)": [8.5, 5.0, 2.1],
-        "waterborne_disease_risk (%)": [10.0, 50.0, 90.0]
-    })
+        # Predict and save results to new CSV without including 'health_risk'
+        output_csv = "predicted_health_risk_output.csv"
+        
+        predict_and_save_health_risk(model, label_encoder, data, output_csv)
 
-    new_risks = predict_health_risk(model, label_encoder, new_data)
-
-    print("\nPredicted Health Risks for New Data:")
-    for i, risk in enumerate(new_risks):
-        print(f"Data Point {i+1}: {risk}")
+    except FileNotFoundError:
+         print(f"❌ Error: The file '{input_csv}' was not found. Please make sure it exists in the specified path.")
+    except Exception as e:
+         print(f"❌ Unexpected error: {e}")
