@@ -18,3 +18,6 @@ data/large_datasets/
 # Ignore operating system files
 .DS_Store
 Thumbs.db
+
+# Ignore environment files
+.env
