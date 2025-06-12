@@ -1,0 +1,87 @@
+Latitude,Longitude,Area Name,City Name,Population,Category,Disease Outbreak Risk (%),Malnutrition Rate (%),Sanitation Score (0-10),Waterborne Disease Risk (%)
+28.758066,77.130328,Siraspur,North Delhi,8303,Developed,71.96,37.18,3.01,50.88
+13.037888,80.279155,Zone 9 Teynampet,Chennai,18868,Developed,66.49,35.93,3.46,56.42
+22.590499,88.366312,Shobha Bazar East,Kolkata,23422,Semi-Developed,49.74,10.31,6.86,52.92
+26.902403,80.94672,Aliganj,Lucknow,10376,Semi-Developed,66.01,49.66,1.01,65.04
+21.179223,79.033571,Area Code: 440013,Nagpur,11014,Semi-Developed,87.49,30.3,0.28,84.56
+23.072043,72.658451,Naroda,Ahmedabad,45223,Slum,35.78,17.78,4.76,37.63
+23.253647,77.470233,Chhatrasal Nagar,Bhopal,12399,Semi-Developed,93.01,39.19,0.24,91.12
+17.458996,78.46828,Rasoolpura,Hyderabad,14828,Developed,67.94,45.83,0.47,52.69
+22.591292,88.366651,Shobha Bazar East,Kolkata,33582,Semi-Developed,28.63,10.69,5.74,69.9
+17.449295,78.476217,Rasoolpura,Hyderabad,17896,Developed,77.8,38.6,0.29,55.45
+26.908698,80.95055,Aliganj,Lucknow,5400,Developed,81.28,45.41,3.99,63.52
+26.90696,80.960471,Vikas Nagar,Lucknow,10557,Semi-Developed,66.01,49.66,1.01,65.04
+21.16932,79.04729,Seminary Hills,Nagpur,19397,Semi-Developed,49.74,10.31,6.86,52.92
+21.177746,79.032233,Area Code: 440013,Nagpur,11014,Semi-Developed,66.01,49.66,1.01,65.04
+23.039991,72.665934,Area Code: 382350,Ahmedabad,17355,Slum,77.8,38.6,0.29,55.45
+23.038941,72.668545,Area Code: 382350,Ahmedabad,17355,Slum,77.8,38.6,0.29,55.45
+23.073044,72.657454,Naroda,Ahmedabad,45223,Slum,35.78,17.78,4.76,37.63
+17.580458,78.47596,Area Code: 500014,Medchal?alkajgiri,1301,Developed,71.96,37.18,3.01,50.88
+23.062629,72.650064,Naroda,Ahmedabad,42900,Slum,35.78,17.78,4.76,37.63
+25.593752,85.124505,Area Code: 800001,Patna,40196,Slum,28.44,24.8,4.89,40.29
+12.989353,77.609839,Shivajinagar,Bengaluru,53153,Developed,17.55,6.58,8.8,24.24
+13.022368,77.590255,Ganga Nagar,Bengaluru,44792,Semi-Developed,35.78,17.78,4.76,37.63
+25.598266,85.148603,Rajendra Nagar,Patna,45659,Slum,21.88,28.72,4.43,53.9
+19.026384,72.872233,F/N Ward,Mumbai,45036,Semi-Developed,35.78,17.78,4.76,37.63
+19.047133,72.858267,G/N Ward,Mumbai,49919,Semi-Developed,42.17,28.01,6.6,61.33
+22.5379,88.318277,Kidderpore,Kolkata,47806,Slum,21.88,28.72,4.43,53.9
+22.706641,75.845903,Area Code: 452001,Indore,26445,Developed,48.35,25.72,6.57,34.39
+23.244687,77.427979,Area Code: 462001,Bhopal,11571,Developed,87.49,30.3,0.28,84.56
+26.903568,80.960253,Vikas Nagar,Lucknow,10557,Semi-Developed,66.01,49.66,1.01,65.04
+28.840658,77.100696,Sector A-10,North Delhi,7589,Slum,71.2,30.85,0.93,54.21
+17.500565,78.524061,Area Code: 500094,Medchal?alkajgiri,6430,Developed,71.96,37.18,3.01,50.88
+26.904037,80.947085,Aliganj,Lucknow,10376,Semi-Developed,66.01,49.66,1.01,65.04
+26.911726,80.956983,Aliganj,Lucknow,5400,Developed,81.28,45.41,3.99,63.52
+26.900647,75.807447,Adarsh Nagar,Jaipur,13983,Developed,67.94,45.83,0.47,52.69
+23.058574,72.647976,Naroda,Ahmedabad,44351,Slum,35.78,17.78,4.76,37.63
+23.22968,77.469898,Awadhpuri,Bhopal,5941,Developed,71.96,37.18,3.01,50.88
+23.196317,77.436221,Area Code: 462001,Bhopal,14446,Semi-Developed,67.94,45.83,0.47,52.69
+21.177892,79.039094,Area Code: 440013,Nagpur,11014,Developed,87.49,30.3,0.28,84.56
+23.217089,77.462509,Saket Nagar,Bhopal,8909,Developed,71.2,30.85,0.93,54.21
+19.103557,72.884573,L Ward,Mumbai,34849,Semi-Developed,28.63,10.69,5.74,69.9
+19.067659,72.895837,M/W Ward,Mumbai,52664,Semi-Developed,17.55,6.58,8.8,24.24
+19.056733,72.898135,M/W Ward,Mumbai,49809,Semi-Developed,42.17,28.01,6.6,61.33
+12.987117,77.607126,Shivajinagar,Bengaluru,53153,Developed,17.55,6.58,8.8,24.24
+13.001957,77.623685,Cooke Town,Bengaluru,57660,Semi-Developed,17.55,6.58,8.8,24.24
+13.015699,77.595045,JC Nagar,Bengaluru,24207,Developed,48.35,25.72,6.57,34.39
+23.045376,72.661942,Area Code: 382350,Ahmedabad,37936,Slum,35.78,17.78,4.76,37.63
+23.052847,72.657253,Area Code: 382350,Ahmedabad,41215,Slum,28.44,24.8,4.89,40.29
+23.05511,72.647777,Thakkarabapa Nagar,Ahmedabad,53776,Slum,17.55,6.58,8.8,24.24
+23.061008,72.65635,Naroda,Ahmedabad,42900,Slum,35.78,17.78,4.76,37.63
+23.255553,77.476078,Sonagiri,Bhopal,12954,Semi-Developed,93.01,39.19,0.24,91.12
+19.120854,72.882825,K/E Ward,Mumbai,47844,Semi-Developed,21.88,28.72,4.43,53.9
+12.986003,77.599986,Shivajinagar,Bengaluru,61631,Semi-Developed,3.64,7.58,9.92,19
+13.002475,77.623602,Cooke Town,Bengaluru,57660,Semi-Developed,17.55,6.58,8.8,24.24
+13.003938,77.628565,Cooke Town,Bengaluru,60263,Semi-Developed,17.55,6.58,8.8,24.24
+19.041801,72.857226,G/N Ward,Mumbai,49919,Semi-Developed,42.17,28.01,6.6,61.33
+20.352273,85.818594,Area Code: 751024,Bhubaneswar Municipal Corporation,11422,Slum,87.49,30.3,0.28,84.56
+28.73542,77.16383,Bhalswa Slum,Delhi,12000,Slum,93.01,39.19,0.24,91.12
+18.4575,73.8493,Ambegaon BK,Pune,9500,Slum,71.2,30.85,0.93,54.21
+18.512,73.8411,Vithhal Nagar,Pune,8000,Slum,71.2,30.85,0.93,54.21
+18.4911,73.8064,Warje,Pune,10500,Slum,66.01,49.66,1.01,65.04
+12.8859,77.645,Kudlu Slum,Bengaluru,15000,Slum,67.94,45.83,0.47,52.69
+28.5355,77.2723,Indira Camp (Okhla),Delhi,11200,Slum,87.49,30.3,0.28,84.56
+28.6078,77.3112,Kalyanpuri Slum,Delhi,13500,Slum,93.01,39.19,0.24,91.12
+19.038,72.8511,Rajiv Gandhi Nagar (near Dharavi),Mumbai,9000,Slum,71.2,30.85,0.93,54.21
+19.2403,73.1303,Kalyan Slum,Mumbai Metropolitan Region,10000,Slum,66.01,49.66,1.01,65.04
+23.0338,72.6412,Bapunagar Slum,Ahmedabad,14000,Slum,67.94,45.83,0.47,52.69
+19.0727,72.8698,Annabhau Sathe Nagar,Mumbai,11500,Slum,87.49,30.3,0.28,84.56
+28.6875,77.2753,Seemapuri,Delhi,14000,Slum,67.94,45.83,0.47,52.69
+28.6751,77.1274,J.J. Colony,Delhi,10000,Slum,66.01,49.66,1.01,65.04
+22.5329,88.3194,Garden Reach,Kolkata,12500,Slum,93.01,39.19,0.24,91.12
+22.5225,88.2645,Metiabruz,Kolkata,9000,Slum,71.2,30.85,0.93,54.21
+22.5413,88.3751,Park Circus,Kolkata,13000,Underdev,93.01,39.19,0.24,91.12
+22.5175,88.3979,Kasba,Kolkata,11000,Underdev,87.49,30.3,0.28,84.56
+17.3387,78.4729,Rajendranagar,Hyderabad,10500,Slum,66.01,49.66,1.01,65.04
+17.4244,78.4242,Borabanda,Hyderabad,9500,Slum,71.2,30.85,0.93,54.21
+17.7099,83.2995,Yerukala Basti,Visakhapatnam,8500,Slum,71.2,30.85,0.93,54.21
+17.8205,83.3811,Madhurawada,Visakhapatnam,12000,Underdev,93.01,39.19,0.24,91.12
+12.9943,77.5711,Sanjay Nagar,Bengaluru,13500,Slum,93.01,39.19,0.24,91.12
+12.9529,77.6196,Ejipura,Bengaluru,11000,Slum,87.49,30.3,0.28,84.56
+13.0827,80.2707,Shanti Nagar,Chennai,9000,Slum,71.2,30.85,0.93,54.21
+13.1025,80.2577,Vyasarpadi,Chennai,14500,Slum,67.94,45.83,0.47,52.69
+18.5448,73.8925,Indira Nagar,Pune,10000,Underdev,66.01,49.66,1.01,65.04
+18.5186,73.8823,Ghorpadi Peth,Pune,11500,Underdev,87.49,30.3,0.28,84.56
+23.0271,72.6106,Gomtipur,Ahmedabad,12000,Slum,93.01,39.19,0.24,91.12
+23.0446,72.6286,Rakhial,Ahmedabad,13000,Slum,93.01,39.19,0.24,91.12
+23.0095,72.5844,Danilimda,Ahmedabad,11000,Slum,87.49,30.3,0.28,84.56
